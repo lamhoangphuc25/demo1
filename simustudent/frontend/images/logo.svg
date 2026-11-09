@@ -1,0 +1,17 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(10, 8)">
+    <rect width="44" height="44" rx="12" fill="url(#logoGrad)" />
+    <path d="M22 10 L36 17 L22 24 L8 17 Z" fill="#ffffff" />
+    <path d="M14 20.5 V29 C14 32 17.5 34 22 34 C26.5 34 30 32 30 29 V20.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+    <path d="M33 18.5 V27" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" />
+    <circle cx="33" cy="28.5" r="1.5" fill="#fbbf24" />
+  </g>
+  <text x="65" y="34" font-family="'Be Vietnam Pro', sans-serif" font-size="22" font-weight="800" fill="#1e3a8a">Simu<tspan fill="#2563eb">Student</tspan></text>
+  <text x="66" y="47" font-family="'Be Vietnam Pro', sans-serif" font-size="10" font-weight="600" fill="#64748b" letter-spacing="1.5">UTH • NHÓM 3</text>
+</svg>

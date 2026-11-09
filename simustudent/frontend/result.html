@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kết quả học kỳ – SimuStudent</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .result-hero {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+      color: white;
+      padding: 40px 0 32px;
+      text-align: center;
+      position: relative;
+    }
+    .gpa-circle {
+      width: 124px; height: 124px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 4px solid rgba(255,255,255,0.4);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .gpa-num { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+    .gpa-label { font-size: 0.72rem; opacity: 0.85; font-weight: 600; letter-spacing: 0.5px; }
+
+    .grade-table th { font-size: 0.82rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: .04em; }
+    .grade-table td { font-size: 0.88rem; vertical-align: middle; }
+    .grade-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    }
+    .grade-A  { background: #d1fae5; color: #065f46; }
+    .grade-B  { background: #dbeafe; color: #1d4ed8; }
+    .grade-C  { background: #fef3c7; color: #92400e; }
+    .grade-D  { background: #fee2e2; color: #991b1b; }
+    .grade-F  { background: #fce7f3; color: #9d174d; }
+    .pass-badge { background: var(--success-light); color: var(--success); padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+    .fail-badge { background: var(--danger-light);  color: var(--danger);  padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+
+    .summary-card {
+      background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); text-align: center;
+      border: 1px solid var(--gray-200);
+    }
+    .summary-num { font-size: 2.2rem; font-weight: 800; color: var(--primary); }
+    .summary-label { font-size: 0.82rem; color: var(--gray-500); margin-top: 4px; }
+
+    .graduation-meter {
+      background: white; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm);
+    }
+    .grad-progress-wrap {
+      background: var(--gray-100); border-radius: 999px; height: 18px; overflow: hidden; margin: 12px 0;
+    }
+    .grad-progress-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      transition: width 1s ease;
+    }
+
+    .prediction-box {
+      background: var(--primary-light); border-radius: var(--radius-sm);
+      padding: 16px 20px; margin-top: 16px;
+      border-left: 4px solid var(--primary);
+      font-size: 0.88rem;
+    }
+
+    .action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+    .btn-action {
+      padding: 13px 28px; border-radius: var(--radius); font-size: .95rem; font-weight: 600;
+      font-family: var(--font-main); border: none; cursor: pointer; transition: all .2s;
+    }
+    .btn-primary-action {
+      background: var(--primary); color: white;
+      box-shadow: 0 4px 14px rgba(37,99,235,.35);
+    }
+    .btn-primary-action:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-secondary-action {
+      background: white; color: var(--gray-700);
+      border: 2px solid var(--gray-200);
+    }
+    .btn-secondary-action:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-simustudent">
+  <div class="container">
+    <a class="navbar-brand-custom d-flex align-items-center" href="index.html">
+      <img src="images/favicon.svg" alt="Logo" width="28" height="28" class="me-2">
+      SimuStudent
+    </a>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="toggleSound()" title="Bật/Tắt âm thanh">
+        <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+      </button>
+      <div class="semester-badge d-flex align-items-center gap-2" style="background:#f1f5f9;color:var(--gray-900);border-color:var(--gray-200);">
+        <img src="images/avatar-student.svg" alt="Avatar" width="22" height="22" class="rounded-circle">
+        <span id="nav-student-name">Lâm Hoàng Phúc</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Result Hero -->
+<div class="result-hero">
+  <div class="container">
+    <div class="gpa-circle" id="gpa-circle">
+      <div class="gpa-num" id="result-gpa">0.00</div>
+      <div class="gpa-label">GPA KỲ NÀY</div>
+    </div>
+    <h1 id="result-title" style="font-size:1.7rem;font-weight:800;margin-bottom:8px">Học kỳ kết thúc!</h1>
+    <p id="result-subtitle" style="opacity:.85;font-size:.95rem">Bảng điểm và phân tích chi tiết kết quả học tập của bạn</p>
+    <div class="d-flex justify-content-center gap-4 mt-3" style="flex-wrap:wrap">
+      <div>
+        <div style="font-size:.75rem;opacity:.7">TC tích lũy kỳ này</div>
+        <div style="font-size:1.5rem;font-weight:700" id="hero-tc-term">0</div>
+      </div>
+      <div>
+        <div style="font-size:.75rem;opacity:.7">Tổng tín chỉ tích lũy</div>
+        <div style="font-size:1.5rem;font-weight:700"><span id="hero-tc-accum">0</span>/120</div>
+      </div>
+      <div>
+        <div style="font-size:.75rem;opacity:.7">Sức khỏe còn lại</div>
+        <div style="font-size:1.5rem;font-weight:700"><span id="hero-health">0</span>%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+
+  <!-- Summary cards -->
+  <div class="row g-3 mb-4" id="summary-cards"></div>
+
+  <div class="row g-4">
+    <!-- Left: Grade table + Chart -->
+    <div class="col-lg-8">
+
+      <!-- Grade Table -->
+      <div style="background:white;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:20px;border:1px solid var(--gray-200)">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 style="font-weight:700;margin:0"><i class="fa-solid fa-table me-2 text-primary"></i>Bảng điểm chi tiết</h5>
+          <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+            <i class="fa-solid fa-print me-1"></i>In bảng điểm
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table grade-table mb-0">
+            <thead>
+              <tr>
+                <th>Môn học</th>
+                <th class="text-center">Giữa kỳ (40%)</th>
+                <th class="text-center">Cuối kỳ (60%)</th>
+                <th class="text-center">Tổng kết</th>
+                <th class="text-center">Xếp loại</th>
+                <th class="text-center">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="grade-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div style="background:white;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200)">
+        <h5 style="font-weight:700;margin-bottom:16px"><i class="fa-solid fa-chart-line me-2 text-primary"></i>Biến động chỉ số qua 15 tuần</h5>
+        <canvas id="weekChart" height="120"></canvas>
+      </div>
+
+    </div>
+
+    <!-- Right: Graduation progress + Analysis -->
+    <div class="col-lg-4">
+
+      <!-- Graduation meter -->
+      <div class="graduation-meter mb-4" style="border:1px solid var(--gray-200)">
+        <h5 style="font-weight:700;font-size:.95rem"><i class="fa-solid fa-graduation-cap me-2 text-primary"></i>Tiến độ tốt nghiệp</h5>
+        <div class="grad-progress-wrap">
+          <div class="grad-progress-fill" id="grad-bar" style="width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--gray-500)">
+          <span id="grad-label">0 / 120 TC</span>
+          <span id="grad-pct">0%</span>
+        </div>
+        <div class="prediction-box" id="prediction-box"></div>
+      </div>
+
+      <!-- Analysis -->
+      <div style="background:white;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200)">
+        <h5 style="font-weight:700;font-size:.95rem;margin-bottom:14px">
+          <i class="fa-solid fa-lightbulb me-2 text-warning"></i>Đánh giá & Nhận xét
+        </h5>
+        <div id="analysis-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="action-btns">
+    <button class="btn-action btn-primary-action" onclick="nextSemester()">
+      <i class="fa-solid fa-arrow-right me-2"></i>Sang học kỳ tiếp theo
+    </button>
+    <button class="btn-action btn-secondary-action" onclick="window.location.href='register-course.html'">
+      <i class="fa-solid fa-rotate-left me-2"></i>Chơi lại kỳ này
+    </button>
+    <button class="btn-action btn-secondary-action" onclick="resetGame()">
+      <i class="fa-solid fa-house me-2"></i>Bắt đầu lại từ đầu
+    </button>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast-custom" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/api.js"></script>
+<script src="js/subjects-data.js"></script>
+<script src="js/result.js"></script>
+</body>
+</html>

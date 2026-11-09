@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimuStudent – Mô phỏng hành trình sinh viên đại học</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hero {
+      min-height: 92vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding-top: 80px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-content { position: relative; z-index: 1; color: white; }
+    .hero-title {
+      font-size: 3.2rem; font-weight: 800; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero-title span { color: #60a5fa; }
+    .hero-desc { font-size: 1.1rem; opacity: .88; max-width: 540px; margin-bottom: 32px; line-height: 1.7; }
+    .btn-hero-primary {
+      background: white; color: var(--primary);
+      border: none; border-radius: var(--radius);
+      padding: 15px 36px; font-size: 1rem; font-weight: 700;
+      font-family: var(--font-main); cursor: pointer;
+      transition: all .2s; box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+    .btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.3); color: var(--primary-dark); }
+    .btn-hero-secondary {
+      background: rgba(255,255,255,.12); color: white;
+      border: 2px solid rgba(255,255,255,.3); border-radius: var(--radius);
+      padding: 13px 28px; font-size: 1rem; font-weight: 600;
+      font-family: var(--font-main); cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-hero-secondary:hover { background: rgba(255,255,255,.25); border-color: rgba(255,255,255,.6); color: white; }
+
+    .float-card {
+      background: rgba(255,255,255,.1); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.2); border-radius: var(--radius);
+      padding: 20px; color: white; text-align: center;
+      transition: transform 0.2s;
+    }
+    .float-card:hover { transform: translateY(-4px); }
+    .float-num { font-size: 2.2rem; font-weight: 800; }
+    .float-label { font-size: .8rem; opacity: .8; margin-top: 4px; }
+
+    .howto-section { padding: 80px 0; background: white; }
+    .step-card {
+      background: var(--gray-50); border-radius: var(--radius);
+      padding: 28px 24px; text-align: center; height: 100%;
+      border: 1px solid var(--gray-200);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .step-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .step-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin: 0 auto 16px;
+    }
+    .step-num {
+      display: inline-block; background: var(--primary); color: white;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: .75rem; font-weight: 700; line-height: 24px;
+      text-align: center; margin-bottom: 12px;
+    }
+
+    .footer {
+      background: var(--gray-900); color: var(--gray-500);
+      padding: 32px 0; text-align: center; font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header Navbar -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--gray-200);padding:10px 0">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="index.html" class="navbar-brand-custom d-flex align-items-center text-decoration-none">
+      <img src="images/favicon.svg" alt="Logo" width="30" height="30" class="me-2">
+      SimuStudent
+    </a>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="toggleSound()" title="Bật/Tắt âm thanh">
+        <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+      </button>
+      <button class="btn btn-primary btn-sm rounded-pill px-3" onclick="openStartModal()">
+        <i class="fa-solid fa-play me-1"></i>Chơi ngay
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container hero-content">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 16px;font-size:.82rem;margin-bottom:20px">
+          <span style="width:8px;height:8px;background:#4ade80;border-radius:50%"></span>
+          Đồ án Lập Trình Web • Nhóm 3 UTH
+        </div>
+        <h1 class="hero-title">
+          Mô phỏng hành trình<br><span>sinh viên đại học</span>
+        </h1>
+        <p class="hero-desc">
+          Trải nghiệm 4 năm giảng đường trong vài chục phút: Đăng ký môn học (tối đa 25 tín chỉ),
+          phân bổ quỹ 168 giờ/tuần, đối mặt tình huống bất ngờ và cán mốc <strong>120 tín chỉ</strong> để tốt nghiệp!
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <button class="btn-hero-primary" onclick="openStartModal()">
+            <i class="fa-solid fa-play me-2"></i>Bắt đầu mô phỏng
+          </button>
+          <button class="btn-hero-secondary" onclick="document.getElementById('howto').scrollIntoView({behavior:'smooth'})">
+            <i class="fa-solid fa-circle-info me-2"></i>Luật chơi & Hướng dẫn
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6"><div class="float-card"><div class="float-num">120</div><div class="float-label">Tín chỉ cần để tốt nghiệp</div></div></div>
+          <div class="col-6"><div class="float-card"><div class="float-num">25</div><div class="float-label">Tín chỉ tối đa / học kỳ</div></div></div>
+          <div class="col-6"><div class="float-card"><div class="float-num">168h</div><div class="float-label">Quỹ thời gian mỗi tuần</div></div></div>
+          <div class="col-6"><div class="float-card"><div class="float-num">35+</div><div class="float-label">Môn học ngành CNTT</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How to play Section -->
+<section class="howto-section" id="howto">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 style="font-size:2rem;font-weight:800;color:var(--gray-900)">Quy trình mô phỏng</h2>
+      <p style="color:var(--gray-500);font-size:1rem">4 bước tái hiện trọn vẹn đời sống sinh viên ngành CNTT</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div class="step-num">1</div>
+          <h5 style="font-weight:700;margin-bottom:8px">Đăng ký môn học</h5>
+          <p style="font-size:.88rem;color:var(--gray-500);margin:0">Mỗi kỳ từ 12 đến 25 tín chỉ. Có thể chọn học dồn ở kỳ hè (max 10 TC) để ra trường sớm.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="step-num">2</div>
+          <h5 style="font-weight:700;margin-bottom:8px">Phân bổ 168 giờ</h5>
+          <p style="font-size:.88rem;color:var(--gray-500);margin:0">Cân đối giữa Giờ lên lớp, Tự học, Giấc ngủ (>=56h) và Giải trí để giữ vững sức khỏe.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div class="step-num">3</div>
+          <h5 style="font-weight:700;margin-bottom:8px">Xử lý tình huống</h5>
+          <p style="font-size:.88rem;color:var(--gray-500);margin:0">Bị ốm, deadline dồn, bạn bùng đồ án, kiểm tra đột xuất... Mỗi lựa chọn đều tác động đến điểm.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="step-num">4</div>
+          <h5 style="font-weight:700;margin-bottom:8px">Thi & Nhận bằng</h5>
+          <p style="font-size:.88rem;color:var(--gray-500);margin:0">Giữa kỳ (40%) + Cuối kỳ (60%). Cán mốc 120 tín chỉ để nhận bằng cử nhân CNTT!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p style="margin:0"><img src="images/favicon.svg" alt="" width="20" height="20" class="me-2"><strong style="color:white">SimuStudent</strong> – Đồ án môn Lập Trình Web</p>
+    <p style="margin:4px 0 0;font-size:.8rem">Khoa Công nghệ Thông tin – Trường Đại học Giao thông Vận tải TP.HCM (UTH)</p>
+  </div>
+</footer>
+
+<!-- Modal: Bắt đầu mô phỏng / Tạo nhân vật -->
+<div class="modal fade" id="startModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4 p-4">
+      <div class="text-center mb-4">
+        <img src="images/avatar-student.svg" alt="Avatar" width="72" height="72" class="mb-2">
+        <h4 style="font-weight:800;color:var(--gray-900)">Khởi tạo nhân vật sinh viên</h4>
+        <p class="text-muted" style="font-size:.85rem">Nhập thông tin của bạn để bắt đầu năm học đầu tiên</p>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" style="font-size:.88rem;font-weight:600">Họ và tên sinh viên</label>
+        <input type="text" class="form-control" id="player-name" value="Lâm Hoàng Phúc" placeholder="Nhập họ tên...">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" style="font-size:.88rem;font-weight:600">Mã số sinh viên (MSSV)</label>
+        <input type="text" class="form-control" id="player-mssv" value="079205028825" placeholder="Nhập MSSV...">
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label" style="font-size:.88rem;font-weight:600">Mục tiêu ra trường</label>
+        <select class="form-select" id="player-goal">
+          <option value="normal">Đúng hạn (4 năm / 8 học kỳ chính)</option>
+          <option value="fast">Học vượt ra trường sớm (3 - 3.5 năm, dồn tín chỉ cả kỳ hè)</option>
+          <option value="chill">Thong thả, chú trọng GPA giỏi/xuất sắc</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary w-100 py-2 rounded-3 fw-bold" onclick="startNewGame()">
+        <i class="fa-solid fa-graduation-cap me-2"></i>Bắt đầu học kỳ 1
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/api.js"></script>
+<script>
+function toggleSound() {
+  if (window.sound) {
+    const isMuted = window.sound.toggleMute();
+    const icon = document.getElementById("sound-icon");
+    if (icon) icon.className = isMuted ? "fa-solid fa-volume-xmark text-danger" : "fa-solid fa-volume-high text-primary";
+  }
+}
+
+function openStartModal() {
+  if (window.sound) window.sound.click();
+  const modal = new bootstrap.Modal(document.getElementById("startModal"));
+  modal.show();
+}
+
+function startNewGame() {
+  if (window.sound) window.sound.fanfare();
+  const name = document.getElementById("player-name").value.trim() || "Lâm Hoàng Phúc";
+  const mssv = document.getElementById("player-mssv").value.trim() || "079205028825";
+
+  const gs = {
+    studentName: name,
+    mssv: mssv,
+    health: 100,
+    stress: 0,
+    knowledge: 0,
+    gpa: 0.0,
+    accumulatedCredits: 0,
+    currentYear: 1,
+    currentTerm: "HK1",
+    week: 1,
+    weekHistory: [],
+    courseKnowledge: {}
+  };
+
+  localStorage.setItem("simState", JSON.stringify(gs));
+  localStorage.removeItem("currentSemesterRegistration");
+  localStorage.removeItem("termHistory");
+
+  setTimeout(() => {
+    window.location.href = "register-course.html";
+  }, 400);
+}
+</script>
+</body>
+</html>
