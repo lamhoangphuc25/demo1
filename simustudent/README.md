@@ -2,7 +2,7 @@
 
 > Mo phong hanh trinh sinh vien dai hoc - Do an Lap Trinh Web
 
-**Nhom 3 | CNTT24CLC | UTH | GVHD: Tran Thinh Manh Duc**
+**Nhom 3 | lap trinh web  | UTH | GVHD: Tran Thinh Manh Duc**
 
 ---
 
