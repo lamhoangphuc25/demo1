@@ -109,13 +109,6 @@ npm run dev
 | POST   | /api/sim/finish-term        | Ket thuc ky, tinh diem   |
 | GET    | /api/sim/history            | Lich su cac ky da hoc    |
 
-## Thanh vien nhom
-
-| Ho va ten       | MSSV          | Chuc vu     |
-|-----------------|---------------|-------------|
-| Lam Hoang Phuc  | 079205028825  | Truong nhom |
-| (thanh vien 2)  |               |             |
-| (thanh vien 3)  |               |             |
 
 ---
 *Do an mon Lap Trinh Web - UTH 2024*
